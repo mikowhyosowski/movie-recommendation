@@ -1,0 +1,33 @@
+version: '3.3'
+
+services:
+  php:
+    build:
+      context: ./docker/php
+    volumes:
+      - ./docker/php/php.ini:/usr/local/etc/php/conf.d/custom.ini
+      - .:/var/www/html
+    depends_on:
+      - database
+    environment:
+      - DATABASE_URL=mysql://root:root@database:3306/movies_db?serverVersion=8.0&charset=utf8mb4
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - .:/var/www/html
+    ports:
+      - "8000:80"
+    depends_on:
+      - php
+
+  database:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: movies_db
+    volumes:
+      - ./docker/mysql/data:/var/lib/mysql
+    ports:
+      - "3306:3306"

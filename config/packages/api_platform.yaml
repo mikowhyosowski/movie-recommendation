@@ -1,0 +1,15 @@
+api_platform:
+    title: Movie recommendation for Morele
+    version: 1.0.0
+    defaults:
+        stateless: true
+        cache_headers:
+            vary: ['Content-Type', 'Authorization', 'Origin']
+    collection:
+        pagination:
+            enabled: true
+            items_per_page_parameter_name: itemsPerPage
+    swagger:
+        api_keys: []
+    mapping:
+        paths: ['%kernel.project_dir%/src/Entity']
