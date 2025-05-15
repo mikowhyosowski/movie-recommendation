@@ -7,7 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Movie>
+ * Repository for managing Movie entities, providing custom query methods.
  */
 class MovieRepository extends ServiceEntityRepository
 {
@@ -17,6 +17,8 @@ class MovieRepository extends ServiceEntityRepository
     }
 
     /**
+     * Retrieves all movies with optional sorting.
+     *
      * @return Movie[]
      */
     public function findAllMovies(array $order): array
@@ -33,12 +35,13 @@ class MovieRepository extends ServiceEntityRepository
     }
 
     /**
+     * Retrieves a specified number of random movies.
+     *
      * @return Movie[]
      */
     public function findRandomMovies(int $itemsPerPage = 3): array
     {
-        // Napisałem natywne zapytanie SQL ze względu na to, że 
-        // Doctrine DQL nie obsługuje funkcji RAND() domyślnie
+        // Using native SQL query because Doctrine DQL does not support RAND() by default
         $conn = $this->getEntityManager()->getConnection();
         $sql = 'SELECT * FROM movie ORDER BY RAND() LIMIT :limit';
         $stmt = $conn->prepare($sql);
@@ -49,13 +52,14 @@ class MovieRepository extends ServiceEntityRepository
     }
 
     /**
+     * Retrieves movies starting with a given letter, with pagination and sorting, applying special logic for 'W'.
+     *
      * @return Movie[]
      */
     public function findByLetter(string $letter, int $page, int $itemsPerPage, array $order): array
     {
-        // Napisałem natywne zapytanie SQL ze względu na to, że 
-        // Doctrine DQL nie obsługuje operatora % ani funkcji MOD domyślnie
-        // a uznałem, że to tutaj powinno się zadziewać
+        // Using native SQL query because Doctrine DQL does not support % operator or MOD function by default
+        // and I decided this is the appropriate place for this logic
         $conn = $this->getEntityManager()->getConnection();
         $sql = 'SELECT * FROM movie WHERE LOWER(title) LIKE :letter';
         $params = ['letter' => strtolower($letter) . '%'];
@@ -79,6 +83,9 @@ class MovieRepository extends ServiceEntityRepository
         return $result->fetchAllAssociative();
     }
 
+    /**
+     * Generates ORDER BY clause for SQL query based on allowed fields and directions.
+     */
     private function getOrderBySql(array $order, array $allowedFields = ['title']): string
     {
         $orderBy = [];

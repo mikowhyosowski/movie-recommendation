@@ -9,6 +9,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 
+/**
+ * Controller for handling movie recommendation endpoints.
+ */
 class RecommendationController
 {
     public function __construct(
@@ -16,6 +19,12 @@ class RecommendationController
         private SerializerInterface $serializer
     ) {}
 
+    /**
+     * Handles the retrieval of random movies.
+     *
+     * @param Request $request The HTTP request containing query parameters
+     * @return JsonResponse JSON response containing the list of random movies
+     */
     public function getRandomMovies(Request $request): JsonResponse
     {
         $itemsPerPage = (int) $request->query->get('itemsPerPage', 3);
@@ -25,6 +34,12 @@ class RecommendationController
         return new JsonResponse($this->serializer->serialize($movies, 'json', ['groups' => 'movie:read']), 200, [], true);
     }
 
+    /**
+     * Handles the retrieval of movies starting with a given letter, with pagination and sorting.
+     *
+     * @param Request $request The HTTP request containing query parameters (letter, page, itemsPerPage, order)
+     * @return JsonResponse JSON response containing the list of filtered movies or an error message
+     */
     public function getMoviesByLetter(Request $request): JsonResponse
     {
         $letter = (string) $request->query->get('letter', '');
@@ -44,6 +59,12 @@ class RecommendationController
         return new JsonResponse($this->serializer->serialize($movies, 'json', ['groups' => 'movie:read']), 200, [], true);
     }
 
+    /**
+     * Handles the retrieval of movies with multi-word titles, with optional sorting.
+     *
+     * @param Request $request The HTTP request containing query parameters (order)
+     * @return JsonResponse JSON response containing the list of movies with multi-word titles
+     */
     public function getMultiWordTitles(Request $request): JsonResponse
     {
         $order = $request->query->all('order');

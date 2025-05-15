@@ -13,6 +13,9 @@ use App\Repository\MovieRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+/**
+ * Represents a Movie entity with API Platform and Doctrine ORM integration.
+ */
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 #[ApiResource(
     operations: [
@@ -66,16 +69,32 @@ class Movie
     #[Groups(['movie:read'])]
     private ?string $title = null;
 
+    /**
+     * Gets the unique identifier of the movie.
+     *
+     * @return int|null The movie ID, or null if not set
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * Gets the title of the movie.
+     *
+     * @return string|null The movie title, or null if not set
+     */
     public function getTitle(): ?string
     {
         return $this->title;
     }
 
+    /**
+     * Sets the title of the movie.
+     *
+     * @param string $title The title to set
+     * @return self Returns this instance for method chaining
+     */
     public function setTitle(string $title): static
     {
         $this->title = $title;

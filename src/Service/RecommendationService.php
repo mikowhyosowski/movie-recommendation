@@ -5,6 +5,9 @@ namespace App\Service;
 use App\Entity\Movie;
 use App\Repository\MovieRepository;
 
+/**
+ * Service for generating movie recommendations based on various criteria.
+ */
 class RecommendationService
 {
     public function __construct(private MovieRepository $movieRepository)
@@ -12,9 +15,10 @@ class RecommendationService
     }
 
     /**
-     * Returns 3 random movies.
+     * Retrieves a specified number of random movies.
      *
-     * @return Movie[]
+     * @param int $itemsPerPage Number of random movies to retrieve (default: 3)
+     * @return Movie[] Array of randomly selected movies
      */
     public function getRandomMovies(int $itemsPerPage): array
     {
@@ -24,9 +28,14 @@ class RecommendationService
     }
 
     /**
-     * Returns movies starting with the given letter. For 'W', only even-length titles are returned.
+     * Retrieves movies starting with the specified letter, with pagination and sorting.
+     * For letter 'W', only movies with even-length titles are returned.
      *
-     * @return Movie[]
+     * @param string $letter The letter to filter movie titles by (single alphabetic character)
+     * @param int $page The page number for pagination
+     * @param int $itemsPerPage Number of items per page
+     * @param array $order Sorting criteria (e.g., ['title' => 'ASC'])
+     * @return Movie[] Array of filtered movies
      */
     public function getMoviesByLetter(string $letter, int $page, int $itemsPerPage, array $order = []): array
     {
@@ -36,9 +45,10 @@ class RecommendationService
     }
 
     /**
-     * Returns movies with more than one word in the title.
+     * Retrieves movies with titles containing more than one word, with optional sorting.
      *
-     * @return Movie[]
+     * @param array $order Sorting criteria (e.g., ['title' => 'ASC'])
+     * @return Movie[] Array of movies with multi-word titles
      */
     public function getMultiWordTitles(array $order = []): array
     {
